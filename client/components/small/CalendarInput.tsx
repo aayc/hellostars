@@ -11,6 +11,7 @@ export default function CalendarInput(props: CalendarInputProps) {
     <TextInput
       prefixIcon="calendar"
       suffixIcon="dropdown"
+      editable={false}
       suffixIconOnClick={() => alert("hey")}
       className={props.className}
       placeholder={props.placeholder}

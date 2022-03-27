@@ -15,12 +15,10 @@ type DarkSkyLocation = {
     const credentials = JSON.parse(fs.readFileSync("./.credentials.json").toString())
     const html = await axios.get("https://www.go-astronomy.com/dark-sky-sites.php")
     const $ = cheerio.load(html.data.toString())
-    // Get h2 with text "Dark Sky Sites"
     const h2 = $('h2').filter(function(this: any) {
         return $(this).text() === "U.S. Dark Sky Parks";
     })
     const table = h2.next()
-
     const links = table.find('a')
     const titles: string[] = links.map(function(this: any) {
         return $(this).text() + " Park"
@@ -33,7 +31,6 @@ type DarkSkyLocation = {
     }).get().slice(1)
 
     const client = new Client()
-
     const results: DarkSkyLocation[] = await Promise.all(titles.map(async (_, i) => {
         const params: GeocodeRequest = {
             params: {
@@ -42,15 +39,11 @@ type DarkSkyLocation = {
                 key: credentials["GOOGLE_GEOCODING_API"]
             }
         }; 
-
         const resp = await client.geocode(params)
         const location = resp.data.results[0].geometry.location
-        const latitude = location.lat
-        const longitude = location.lng
-
         return {
-            latitude,
-            longitude,
+            latitude: location.lat,
+            longitude: location.lng,
             title: titles[i].trim(),
             url: urls[i],
             roughLocation: values[i].startsWith(", ") ? values[i].substring(2) : values[i]

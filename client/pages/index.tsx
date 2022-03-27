@@ -8,6 +8,9 @@ import matter from "gray-matter";
 import Button from "../components/small/Button";
 import TextInput from "../components/small/TextInput";
 import CalendarInput from "../components/small/CalendarInput";
+import { useState, useEffect } from "react";
+
+import DarkSkyMap from "../components/DarkSkyMap";
 
 /*type PostMetadata = {
   title: string;
@@ -26,6 +29,39 @@ type HomePageProps = {
 };*/
 
 const Home = () => {
+  const [initialLocation, setInitialLocation] = useState({
+    lat: 40.30917913082448,
+    lng: -111.7440457971245,
+  });
+  const [address, setAddress] = useState("");
+
+  const search = () => {
+    fetch("/api/search", { method: "POST", body: JSON.stringify({ address }) })
+      .then((res) => res.json())
+      .then((res) => {
+        alert(JSON.stringify(res));
+      });
+    // Use geocoding API to determine locations
+    // Center on the address lat/long
+    // Use nearest locations to interpret zoom (1.5x necessary zoom)
+    // animate map to the side and show list view all in the same url...
+  };
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setInitialLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    }
+  }
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
   return (
     <div className="bg-black flex min-h-screen text-white">
       <Head>
@@ -34,16 +70,23 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="m-auto">
-        <div className="mb-4 flex">
-          <TextInput
-            prefixIcon="map"
-            className="mr-4"
-            placeholder="An address near you"
-          ></TextInput>
-          <CalendarInput placeholder="Anytime" className="mr-4"></CalendarInput>
-          <Button label="Search"></Button>
+      <div className="mt-4 flex flex-col">
+        <div className="">
+          <div className="mb-4 flex">
+            <TextInput
+              prefixIcon="map"
+              className="mr-4"
+              placeholder="An address near you"
+              onChange={(e: any) => setAddress(e.target.value)}
+            ></TextInput>
+            <CalendarInput
+              placeholder="Anyday, anytime"
+              className="mr-4"
+            ></CalendarInput>
+            <Button label="Search" onClick={search}></Button>
+          </div>
         </div>
+        <DarkSkyMap initialLocation={initialLocation}></DarkSkyMap>
       </div>
     </div>
   );

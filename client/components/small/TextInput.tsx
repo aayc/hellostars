@@ -15,6 +15,8 @@ type TextInputProps = {
   suffixIcon?: string;
   className?: string;
   onClick?: any;
+  onChange?: any;
+  editable?: boolean;
   suffixIconOnClick?: any;
 };
 
@@ -33,6 +35,7 @@ function getIcon(icon: string) {
 }
 
 export default function TextInput(props: TextInputProps) {
+  const editable = props.editable === undefined ? true : props.editable;
   return (
     <div className={`input-text flex ${props.className}`}>
       {props.prefixIcon ? (
@@ -47,6 +50,8 @@ export default function TextInput(props: TextInputProps) {
         type="text"
         className={`input-text ${props.className}`}
         placeholder={props.placeholder}
+        readOnly={!editable}
+        onChange={props.onChange}
         onClick={props.onClick}
       ></input>
       {props.suffixIcon ? (
