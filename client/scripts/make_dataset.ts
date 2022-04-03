@@ -1,18 +1,10 @@
 import cheerio from 'cheerio';
 import axios from 'axios';
 import fs from 'fs';
-import { geocode } from '../utils/geocoder';
-
-type DarkSkyLocation = {
-    latitude: number;
-    longitude: number;
-    title: string;
-    url: string;
-    roughLocation: string;
-};
+import { geocode } from '../lib/geocoder';
+import { DarkSkyLocation } from '../lib/darksky';
 
 (async () => {
-    const credentials = JSON.parse(fs.readFileSync("./.credentials.json").toString())
     const html = await axios.get("https://www.go-astronomy.com/dark-sky-sites.php")
     const $ = cheerio.load(html.data.toString())
     const h2 = $('h2').filter(function(this: any) {

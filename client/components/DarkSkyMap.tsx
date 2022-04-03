@@ -1,8 +1,16 @@
 import React from "react";
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 type DarkSkyMapProps = {
   initialLocation: { lat: number; lng: number };
+  markers: MapMarker[];
+};
+
+type MapMarker = {
+  title: string;
+  description: string;
+  lat: number;
+  lng: number;
 };
 
 const containerStyle = {
@@ -37,13 +45,20 @@ function DarkSkyMap(props: DarkSkyMapProps) {
         onLoad={onLoad}
         onUnmount={onUnmount}
       >
-        {/* Child components, such as markers, info windows, etc. */}
-        <></>
+        {props.markers.map((marker) => (
+          <Marker
+            key={"" + marker.lat + marker.lng + marker.title}
+            position={{ lat: marker.lat, lng: marker.lng }}
+            title={marker.title}
+          />
+        ))}
       </GoogleMap>
     </div>
   ) : (
     <></>
   );
 }
+
+export type { MapMarker };
 
 export default React.memo(DarkSkyMap);

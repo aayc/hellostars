@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model dark_sky_locations {
+  id             String   @id @default(cuid())
+  title          String
+  latitude       Float
+  longitude      Float
+  rough_location String
+  url            String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+}

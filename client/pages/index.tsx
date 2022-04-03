@@ -10,7 +10,8 @@ import TextInput from "../components/small/TextInput";
 import CalendarInput from "../components/small/CalendarInput";
 import { useState, useEffect } from "react";
 
-import DarkSkyMap from "../components/DarkSkyMap";
+import DarkSkyMap, { MapMarker } from "../components/DarkSkyMap";
+import { dark_sky_locations } from "@prisma/client";
 
 /*type PostMetadata = {
   title: string;
@@ -34,14 +35,22 @@ const Home = () => {
     lng: -111.7440457971245,
   });
   const [address, setAddress] = useState("");
+  const [markers, setMarkers] = useState([]);
 
   const search = () => {
     fetch("/api/search", { method: "POST", body: JSON.stringify({ address }) })
       .then((res) => res.json())
       .then((res) => {
-        alert(JSON.stringify(res));
+        setMarkers(
+          res.locations.map((loc: dark_sky_locations) => ({
+            lat: loc.latitude,
+            lng: loc.longitude,
+            title: loc.title,
+            description: loc.rough_location,
+          }))
+        );
+        console.log("MARKERS SET");
       });
-    // Use geocoding API to determine locations
     // Center on the address lat/long
     // Use nearest locations to interpret zoom (1.5x necessary zoom)
     // animate map to the side and show list view all in the same url...
@@ -77,6 +86,7 @@ const Home = () => {
               prefixIcon="map"
               className="mr-4"
               placeholder="An address near you"
+              initial="82 Sycamore Lane"
               onChange={(e: any) => setAddress(e.target.value)}
             ></TextInput>
             <CalendarInput
@@ -86,7 +96,10 @@ const Home = () => {
             <Button label="Search" onClick={search}></Button>
           </div>
         </div>
-        <DarkSkyMap initialLocation={initialLocation}></DarkSkyMap>
+        <DarkSkyMap
+          initialLocation={initialLocation}
+          markers={markers}
+        ></DarkSkyMap>
       </div>
     </div>
   );

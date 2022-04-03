@@ -18,6 +18,7 @@ type TextInputProps = {
   onChange?: any;
   editable?: boolean;
   suffixIconOnClick?: any;
+  initial?: string;
 };
 
 function getIcon(icon: string) {
@@ -51,6 +52,7 @@ export default function TextInput(props: TextInputProps) {
         className={`input-text ${props.className}`}
         placeholder={props.placeholder}
         readOnly={!editable}
+        value={props.initial || ""}
         onChange={props.onChange}
         onClick={props.onClick}
       ></input>
